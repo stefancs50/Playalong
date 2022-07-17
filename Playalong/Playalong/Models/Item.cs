@@ -1,10 +1,15 @@
-﻿using Xamarin.Forms;
+﻿using System.IO;
+using Xamarin.Forms;
 
 namespace Playalong.Models
 {
     public class Item : BaseModel
     {
-        private string name { get; set; }
+        private string name;
+        private string path;
+        private string length;
+        private string description;
+        private Stream fileStream;
         public string Name
         {
             get => name;
@@ -14,7 +19,6 @@ namespace Playalong.Models
                 OnPropertyChanged();
             }
         }
-        private string length { get; set; }
         public string Length
         {
             get => length;
@@ -22,6 +26,37 @@ namespace Playalong.Models
             {
                 length = value;
                 OnPropertyChanged();
+            }
+        }
+
+
+        public string Path
+        {
+            get => path;
+            set
+            {
+                path = value;
+                OnPropertyChanged(nameof(Path));
+            }
+        }
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                description = value;
+                OnPropertyChanged(nameof(Description));
+            }
+        }
+
+        public Stream FileStream
+        {
+            get => fileStream;
+            set
+            {
+                fileStream = value;
+                OnPropertyChanged(nameof(FileStream));
             }
         }
 

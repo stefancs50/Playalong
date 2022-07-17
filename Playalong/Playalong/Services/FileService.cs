@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -9,7 +10,7 @@ namespace Playalong.Services
 {
     public class FileService
     {
-        public async Task<FileResult> SelectFiles()
+        public async Task<FileResult> SelectFile()
         {
             try
             {
@@ -32,5 +33,13 @@ namespace Playalong.Services
 
             return null;
         }
+
+        public async Task SaveFile()
+        {
+            var path = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+        }
+
+        public Stream GetStreamFromFileResult(FileResult fr) => new FileStream(fr.FullPath, FileMode.Open, FileAccess.Read);
     }
 }

@@ -12,7 +12,7 @@
 
         <ListView ItemsSource="{Binding Items}" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand"
             SeparatorColor="LightGray" SeparatorVisibility="Default" HasUnevenRows="True"
-            ItemTapped="lstProducts_ItemTapped">
+            ItemTapped="ItemTapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

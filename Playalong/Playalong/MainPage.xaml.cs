@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Playalong
@@ -14,7 +15,7 @@ namespace Playalong
     public partial class MainPage : ContentPage
     {
         public ObservableCollection<Item> Items{ get; set; } = new ObservableCollection<Item>();
-      
+        private Mp3Player Player { get; set; } = new Mp3Player();
         public MainPage()
         {
             InitializeComponent();
@@ -25,19 +26,24 @@ namespace Playalong
             }
         }
 
-        private void lstProducts_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void ItemTapped(object sender, ItemTappedEventArgs e)
         {
-
+            if (e.Item == null)
+                return;
+            var item = (Item)e.Item;
+            Player.Play(item.FileStream);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
             var fs = new FileService();
-            var files = await fs.SelectFiles();
-            if (files == null)
+            var file = await fs.SelectFile();
+            if (file == null)
                 return;
 
-            Items.Add(new Item() { Name = $"Item {files.FileName}", Length = $"00" });
+            Items.Add(new Item() { Name = $"Item {file.FileName}", Length = $"00", FileStream = fs.GetStreamFromFileResult(file)});
         }
     }
 }
