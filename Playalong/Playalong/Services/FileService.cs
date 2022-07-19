@@ -10,36 +10,39 @@ namespace Playalong.Services
 {
     public class FileService
     {
-        public async Task<FileResult> SelectFile()
+        public async Task<string> SelectFile()
         {
             try
             {
            
                 var result = await FilePicker.PickAsync(PickOptions.Default);
                 if (result != null)
-                {
                     if (result.FileName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var stream = await result.OpenReadAsync();
-                    }
-                }
-
-                return result;
+                        return await SaveFile(result);
             }
             catch (Exception ex)
             {
-                // The user canceled or something went wrong
             }
-
             return null;
         }
 
-        public async Task SaveFile()
+        public async Task<string> SaveFile(FileResult fr)
         {
-            var path = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string savedpath = string.Empty;
+            try
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                savedpath = Path.Combine(path, fr.FileName);
+                var deststream = File.Create(savedpath);
 
+                var stream = await fr.OpenReadAsync();
+                await stream.CopyToAsync(deststream);
+                deststream.Close();
+            }
+            catch (Exception ex)
+            {
+            }
+            return savedpath;
         }
-
-        public Stream GetStreamFromFileResult(FileResult fr) => new FileStream(fr.FullPath, FileMode.Open, FileAccess.Read);
     }
 }

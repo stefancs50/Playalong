@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,30 +21,27 @@ namespace Playalong
         {
             InitializeComponent();
             BindingContext = this;
-            for (int i = 0; i < 2; i++)
-            {
-                Items.Add(new Item() { Name = $"Item {i}", Length = $"{i}" });
-            }
         }
-
         private void ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
             var item = (Item)e.Item;
-            Player.Play(item.FileStream);
+            Player.PlayorStop(item.FileStream);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-
             var fs = new FileService();
-            var file = await fs.SelectFile();
-            if (file == null)
+            var path = await fs.SelectFile();
+            if (path == null)
                 return;
+          
+            var file = File.OpenRead(path);
 
-            Items.Add(new Item() { Name = $"Item {file.FileName}", Length = $"00", FileStream = fs.GetStreamFromFileResult(file)});
+            Items.Add(new Item() { Name = $"Item {Path.GetFileName(path)}", Length = $"{file.Length / 1024}", FileStream = file });
         }
+
+       
     }
 }

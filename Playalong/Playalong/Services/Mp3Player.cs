@@ -5,11 +5,19 @@ namespace Playalong.Services
 {
     public class Mp3Player
     {
-        public void Play(Stream file)
+        public void PlayorStop(Stream file)
         {
             ISimpleAudioPlayer player = CrossSimpleAudioPlayer.Current;
-            player.Load(file);
-            player.Play();
+            if (player.IsPlaying)
+            {
+                player.Stop();
+                file.Position = 0;
+            }
+            else
+            {
+                player.Load(file);
+                player.Play();
+            }
         }
     }
 }
